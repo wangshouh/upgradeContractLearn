@@ -2,11 +2,19 @@
 pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
+import "../../src/EternalStorage/EternalStorage.sol";
 
 contract ContractTest is Test {
-    function setUp() public {}
 
-    function testExample() public {
-        assertTrue(true);
+    EternalStorage private storageEth;
+
+    function setUp() public {
+        storageEth = new EternalStorage();
+    }
+
+    function testGetIntValue() public {
+        storageEth.setUIntValue(keccak256('votes'), 1);
+        uint256 value = storageEth.getUIntValue(keccak256('votes'));
+        assertEq(value, 1);
     }
 }
