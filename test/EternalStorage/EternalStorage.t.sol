@@ -17,10 +17,4 @@ contract ContractTest is Test {
         uint256 intValue = storageEth.getUIntValue(keccak256('votes'));
         assertEq(intValue, 1);
     }
-
-    function testGetBooleanValue() public {
-        storageEth.setBooleanValue(keccak256('vote'), true);
-        bool boolValue = storageEth.getBooleanValue(keccak256('vote'));
-        assertTrue(boolValue);
-    }
 }
