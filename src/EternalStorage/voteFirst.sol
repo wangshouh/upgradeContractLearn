@@ -2,19 +2,18 @@
 pragma solidity ^0.8.13;
 
 error GetValueFail();
-error SetValueFail();
 
-contract Vote {
+contract VoteFirst {
     address eternalStorage;
 
     constructor(address _eternalStorage) {
         eternalStorage = _eternalStorage;
     }
 
-    function getNumberOfVotes() public returns(uint) {
+    function getNumberOfVotes() public returns (uint256) {
         (bool success, bytes memory data) = eternalStorage.call(
-		    abi.encodeWithSignature("getUIntValue(bytes32)", keccak256('votes'))
-	    );
+            abi.encodeWithSignature("getUIntValue(bytes32)", keccak256("votes"))
+        );
         if (!success) {
             revert GetValueFail();
         }
@@ -23,12 +22,16 @@ contract Vote {
     }
 
     function vote() public {
-        uint256 orgianVote = getNumberOfVotes();
-        (bool success,) = eternalStorage.call(
-            abi.encodeWithSignature("setUIntValue(bytes32, uint256)", keccak256('votes'), orgianVote+1)
+        uint256 voteNum = getNumberOfVotes() + 1;
+        (bool success, ) = eternalStorage.call(
+            abi.encodeWithSignature(
+                "setUIntValue(bytes32,uint256)",
+                keccak256("votes"),
+                voteNum
+            )
         );
         if (!success) {
-            revert SetValueFail();
+            revert("Call Error");
         }
     }
 }

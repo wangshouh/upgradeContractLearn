@@ -13,7 +13,7 @@ contract EternalStorage {
     }
 }
 
-contract VoteContract {
+contract VoteSecond {
     address eternalStorage;
 
     constructor(address _eternalStorage) {
