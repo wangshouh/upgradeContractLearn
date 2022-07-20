@@ -24,4 +24,10 @@ contract ContractTest is Test {
         uint256 voteNum = voteFirst.getNumberOfVotes();
         assertEq(voteNum, 1);
     }
+
+    function testCrossGetValue() public {
+        voteFirst.vote();
+        uint256 voteNum = voteSecond.getNumberOfVotes();
+        assertEq(voteNum, 1);
+    }
 }
