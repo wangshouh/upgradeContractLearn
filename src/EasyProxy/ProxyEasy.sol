@@ -32,8 +32,8 @@ contract NumberStorageUp is ProxyStorage {
         return number;
     }
 
-    function getSenderAddress() public view returns(address) {
-        return msg.sender;
+    function addNumber() public {
+        number += 1;
     }
 }
 
