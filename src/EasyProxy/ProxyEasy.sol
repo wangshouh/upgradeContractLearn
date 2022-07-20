@@ -21,6 +21,22 @@ contract NumberStorage is ProxyStorage {
     }
 }
 
+contract NumberStorageUp is ProxyStorage {
+    uint256 public number;
+
+    function setNumber(uint256 _uint) public {
+        number = _uint;
+    }
+
+    function getNumber() public view returns (uint256) {
+        return number;
+    }
+
+    function addNumber() public {
+        number = number + 1;
+    }
+}
+
 contract ProxyEasy is ProxyStorage {
     constructor(address _otherContract) {
         setOtherAddress(_otherContract);
