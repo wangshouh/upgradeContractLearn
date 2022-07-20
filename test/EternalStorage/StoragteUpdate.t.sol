@@ -14,7 +14,6 @@ contract ContractTest is Test {
     function setUp() public {
         storageEth = new EternalStorage();
         address storageAddress = address(storageEth);
-        emit log_address(storageAddress);
         voteFirst = new VoteFirst(storageAddress);
         voteSecond = new VoteSecond(storageAddress);
     }
@@ -22,6 +21,12 @@ contract ContractTest is Test {
     function testGetValueFromFirst() public {
         voteFirst.vote();
         uint256 voteNum = voteFirst.getNumberOfVotes();
+        assertEq(voteNum, 1);
+    }
+
+    function testGetValueFromSecond() public {
+        voteSecond.vote();
+        uint256 voteNum = voteSecond.getNumberOfVotes();
         assertEq(voteNum, 1);
     }
 
