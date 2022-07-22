@@ -115,7 +115,7 @@ contract NumberStorage is
         updateCodeAddress(newCode);
     }
 
-    function addNumber(uint256 _number) public {
+    function addNumber(uint256 _number) public delegatedOnly {
         require(
             supplyAmount + _number < totalSupply,
             "Greater than the maximum supply"
