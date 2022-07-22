@@ -109,6 +109,32 @@ contract NumberStorage is
     function constructor1() public {
         totalSupply = 1000;
         initialize();
+        setOwner(msg.sender); 
+    }
+
+    function updateCode(address newCode) public onlyOwner delegatedOnly {
+        updateCodeAddress(newCode);
+    }
+
+    function addNumber(uint256 _number) public delegatedOnly {
+        require(
+            supplyAmount + _number < totalSupply,
+            "Greater than the maximum supply"
+        );
+        supplyAmount = supplyAmount + _number;
+    }
+}
+
+contract NumberStorageUp is
+    LibraryLock,
+    DataLayout,
+    Owned,
+    Proxiable
+{
+    function constructor1() public {
+        totalSupply = 10000;
+        initialize();
+        setOwner(msg.sender);
     }
 
     function updateCode(address newCode) public onlyOwner delegatedOnly {

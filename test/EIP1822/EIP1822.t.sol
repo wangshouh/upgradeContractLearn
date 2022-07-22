@@ -8,9 +8,11 @@ contract ContractTest is Test {
     using stdStorage for StdStorage;
     Proxy private proxy;
     NumberStorage private number;
+    NumberStorageUp private numberUp;
 
     function setUp() public {
         number = new NumberStorage();
+        numberUp = new NumberStorageUp();
         address numberAddress = address(number);
         proxy = new Proxy(
             abi.encodeWithSignature("constructor1()"),
@@ -61,10 +63,38 @@ contract ContractTest is Test {
     }
 
     function testFailDirectCall() public {
+        (bool initCall, ) = address(proxy).call(
+            abi.encodeWithSignature("initialized()")
+        );
+        require(initCall);
         (bool addCall, ) = address(number).call(
             abi.encodeWithSignature("addNumber(uint256)", 100)
         );
 
         require(addCall);
     } 
+
+    function testContractUpgradeGet() public {
+        (bool addCall, ) = address(proxy).call(
+            abi.encodeWithSignature("addNumber(uint256)", 100)
+        );
+
+        require(addCall, "AddNumber Call Error");
+
+        (bool UpgradeCall, ) = address(proxy).call(
+            abi.encodeWithSignature("updateCode(address)", address(numberUp))
+        );
+        
+        require(UpgradeCall, "Upgrade Fail");
+
+        (bool amountCall, bytes memory amount) = address(proxy).call(
+            abi.encodeWithSignature("supplyAmount()")
+        );
+
+        require(amountCall, "Amount Call Error");
+
+        assertEq(abi.decode(amount, (uint256)), 100);
+
+    }
+    
 }
