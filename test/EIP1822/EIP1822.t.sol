@@ -59,4 +59,12 @@ contract ContractTest is Test {
 
         require(addCall, "Add Error");
     }
+
+    function testFailDirectCall() public {
+        (bool addCall, ) = address(number).call(
+            abi.encodeWithSignature("addNumber(uint256)", 100)
+        );
+
+        require(addCall);
+    } 
 }
