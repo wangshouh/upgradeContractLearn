@@ -5,6 +5,7 @@ import "forge-std/Test.sol";
 import "../../src/EIP-1822/EIP1822.sol";
 
 contract ContractTest is Test {
+    using stdStorage for StdStorage;
     Proxy private proxy;
     NumberStorage private number;
 
@@ -39,5 +40,21 @@ contract ContractTest is Test {
         require(amountCall, "Amount Call Error");
 
         assertEq(abi.decode(amount, (uint256)), 100);
+    }
+
+    function testFailOverMax() public {
+        uint256 slot = stdstore
+            .target(address(proxy))
+            .sig("supplyAmount()")
+            .find();
+        bytes32 loc = bytes32(slot);
+        bytes32 mockedsupplyAmount = bytes32(abi.encode(10_000));
+        vm.store(address(proxy), loc, mockedsupplyAmount);
+        (bool addCall, ) = address(proxy).call(
+            abi.encodeWithSignature("addNumber(uint256)", 100)
+        );
+
+        require(addCall, "Add Error");
+
     }
 }
