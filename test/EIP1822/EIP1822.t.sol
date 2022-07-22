@@ -12,7 +12,10 @@ contract ContractTest is Test {
     function setUp() public {
         number = new NumberStorage();
         address numberAddress = address(number);
-        proxy = new Proxy(abi.encodeWithSignature("constructor1()"), numberAddress);
+        proxy = new Proxy(
+            abi.encodeWithSignature("constructor1()"),
+            numberAddress
+        );
     }
 
     function testInit() public {
@@ -55,6 +58,5 @@ contract ContractTest is Test {
         );
 
         require(addCall, "Add Error");
-
     }
 }
