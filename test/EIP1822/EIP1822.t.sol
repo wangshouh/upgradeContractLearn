@@ -24,4 +24,20 @@ contract ContractTest is Test {
         uint256 returnNumber = abi.decode(initSupply, (uint256));
         assertEq(returnNumber, 1000);
     }
+
+    function testAddNumber() public {
+        (bool addCall, ) = address(proxy).call(
+            abi.encodeWithSignature("addNumber(uint256)", 100)
+        );
+
+        require(addCall, "AddNumber Call Error");
+
+        (bool amountCall, bytes memory amount) = address(proxy).call(
+            abi.encodeWithSignature("supplyAmount()")
+        );
+
+        require(amountCall, "Amount Call Error");
+
+        assertEq(abi.decode(amount, (uint256)), 100);
+    }
 }
