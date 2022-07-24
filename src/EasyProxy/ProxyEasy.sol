@@ -9,9 +9,11 @@ contract ProxyStorage {
     }
 }
 
-contract NumberStorage is ProxyStorage {
+contract DataLayout is ProxyStorage {
     uint256 public number;
+}
 
+contract NumberStorage is DataLayout { 
     function setNumber(uint256 _uint) public {
         number = _uint;
     }
@@ -21,9 +23,7 @@ contract NumberStorage is ProxyStorage {
     }
 }
 
-contract NumberStorageUp is ProxyStorage {
-    uint256 public number;
-
+contract NumberStorageUp is DataLayout {
     function setNumber(uint256 _uint) public {
         number = _uint;
     }
