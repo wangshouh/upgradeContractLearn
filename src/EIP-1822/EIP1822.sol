@@ -133,6 +133,7 @@ contract NumberStorageUp is
 {
     function constructor1() public {
         totalSupply = 10000;
+        require(!initialized, "Initalize finish.");
         initialize();
         setOwner(msg.sender);
     }
