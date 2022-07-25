@@ -11,7 +11,7 @@ contract NFTData {
     uint256 public totalSupply;
 }
 
-contract NFTLogicV1 is NFTData, Initializable {
+contract NFTImplementation is NFTData, Initializable {
     function initialize(
         string memory _name,
         string memory _symbol,
