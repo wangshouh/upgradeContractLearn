@@ -5,8 +5,6 @@ import "openzeppelin-contracts/contracts/proxy/utils/Initializable.sol";
 
 contract NFTData {
     string public name;
-    string public symbol;
-    string public baseURI;
     uint256 public currentTokenId;
     uint256 public totalSupply;
 }
@@ -14,13 +12,9 @@ contract NFTData {
 contract NFTImplementation is NFTData, Initializable {
     function initialize(
         string memory _name,
-        string memory _symbol,
-        string memory _baseURI,
         uint256 _totalSupply
     ) public initializer {
         name = _name;
-        symbol = _symbol;
-        baseURI = _baseURI;
         totalSupply = _totalSupply;
     }
 
