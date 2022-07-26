@@ -15,6 +15,7 @@ contract ContractTest is Test {
     
     function setUp() public {
         NFT = new NFTImplementation();
+        NFTUp = new NFTImplementationUp();
         upgrade = new UpgradeableBeacon(address(NFT));
         proxy = new NFTProxy(
             address(upgrade),
@@ -40,5 +41,24 @@ contract ContractTest is Test {
         require(success, "Mint Fail");
         uint256 currentTokenId = abi.decode(data, (uint256));
         assertEq(currentTokenId, 1);    
+    }
+
+    function testUpgradeByOwner() public {
+        (bool success, ) = address(proxy).call(
+            abi.encodeWithSignature("mint()")
+        );
+
+        require(success, "Mint Fail");
+
+        upgrade.upgradeTo(address(NFTUp));
+        proxy.upgradeProxy(address(upgrade), bytes(""));
+
+        (bool ok, bytes memory data) = address(proxy).call(
+            abi.encodeWithSignature("currentTokenId()")
+        );
+
+        require(ok, "Upgrade Fail");
+        uint256 currentTokenId = abi.decode(data, (uint256));
+        assertEq(currentTokenId, 1);  
     }
 }
