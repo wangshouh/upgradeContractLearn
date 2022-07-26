@@ -11,6 +11,7 @@ contract ContractTest is Test {
     NFTProxy private proxy;
     UpgradeableBeacon private upgrade;
     NFTImplementation private NFT;
+    NFTImplementationUp private NFTUp;
     
     function setUp() public {
         NFT = new NFTImplementation();
@@ -31,4 +32,13 @@ contract ContractTest is Test {
         assertEq(NFTName, "TEST");
     }
 
+    function testMint() public {
+        (bool success, bytes memory data) = address(proxy).call(
+            abi.encodeWithSignature("mint()")
+        );
+
+        require(success, "Mint Fail");
+        uint256 currentTokenId = abi.decode(data, (uint256));
+        assertEq(currentTokenId, 1);    
+    }
 }
