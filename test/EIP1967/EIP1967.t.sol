@@ -43,10 +43,10 @@ contract ContractTest is Test {
     }
 
     function ProxyBurn(address ProxyAddress) internal returns (uint256) {
-        (bool burnCall, bytes memory data) = address(ProxyAddress).call(
+        (bool success, bytes memory data) = address(ProxyAddress).call(
             abi.encodeWithSignature("burn()")
         );
-        require(burnCall, "Burn Fail");
+        require(success, "Burn Fail");
         return abi.decode(data, (uint256));
     }
 
@@ -73,20 +73,21 @@ contract ContractTest is Test {
     }
 
     
-    // function testMultiProxy() public {
-    //     NFTProxy proxyNext = new NFTProxy(
-    //         address(upgrade),
-    //         abi.encodeWithSignature("initialize(string,uint256)", "TEST2", 1000)
-    //     );
-    //     (bool proxyMint, ) = address(proxy).call(
-    //         abi.encodeWithSignature("mint()")
-    //     );
-    //     require(proxyMint, "Proxy Mint Fail");        
-    //     (bool proxyNextMint, ) = address(proxyNext).call(
-    //         abi.encodeWithSignature("mint()")
-    //     );
-    //     require(proxyNextMint, "ProxyNext Mint Fail");
+    function testMultiProxy() public {
+        NFTProxy proxyNext = new NFTProxy(
+            address(upgrade),
+            abi.encodeWithSignature("initialize(string,uint256)", "TEST2", 1000)
+        );
+        uint256 ProxyNextBeforeMint = ProxyMint(address(proxyNext));       
+        assertEq(ProxyNextBeforeMint, 1); 
+        uint256 ProxyBeforeMint = ProxyMint(address(proxy));
+        assertEq(ProxyBeforeMint, 1);
 
+        upgrade.upgradeTo(address(NFTUp));
 
-    // }
+        uint256 ProxyNextBurnId = ProxyBurn(address(proxyNext));
+        assertEq(ProxyNextBurnId, 0);  
+        uint256 ProxyBurnId = ProxyBurn(address(proxy));
+        assertEq(ProxyBurnId, 0); 
+    }
 }
