@@ -42,6 +42,14 @@ contract ContractTest is Test {
         return abi.decode(data, (uint256));
     }
 
+    function ProxyBurn(address ProxyAddress) internal returns (uint256) {
+        (bool burnCall, bytes memory data) = address(ProxyAddress).call(
+            abi.encodeWithSignature("burn()")
+        );
+        require(burnCall, "Burn Fail");
+        return abi.decode(data, (uint256));
+    }
+
     function testMint() public {
         uint256 currentTokenId = ProxyMint(address(proxy));
         assertEq(currentTokenId, 1);    
@@ -53,11 +61,7 @@ contract ContractTest is Test {
 
         upgrade.upgradeTo(address(NFTUp));
 
-        (bool burnCall, bytes memory data) = address(proxy).call(
-            abi.encodeWithSignature("burn()")
-        );
-        require(burnCall, "Burn Fail");
-        uint256 currentTokenId = abi.decode(data, (uint256));
+        uint256 currentTokenId = ProxyBurn(address(proxy));
         assertEq(currentTokenId, 0);  
     }
 
