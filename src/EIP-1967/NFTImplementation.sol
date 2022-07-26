@@ -24,3 +24,10 @@ contract NFTImplementation is NFTData, Initializable {
         return currentTokenId;
     }
 }
+
+contract NFTImplementationUp is NFTImplementation {
+    function burn() public returns (uint256) {
+        currentTokenId -= 1;
+        return currentTokenId;
+    }
+}
