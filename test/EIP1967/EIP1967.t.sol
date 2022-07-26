@@ -3,19 +3,19 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 import "../../src/EIP-1967/NFTImplementation.sol";
-import "openzeppelin-contracts/contracts/proxy/beacon/BeaconProxy.sol";
+import "../../src/EIP-1967/proxy.sol";
 import "openzeppelin-contracts/contracts/proxy/beacon/UpgradeableBeacon.sol";
 
 contract ContractTest is Test {
     using stdStorage for StdStorage;
-    BeaconProxy private proxy;
+    NFTProxy private proxy;
     UpgradeableBeacon private upgrade;
     NFTImplementation private NFT;
     
     function setUp() public {
         NFT = new NFTImplementation();
         upgrade = new UpgradeableBeacon(address(NFT));
-        proxy = new BeaconProxy(
+        proxy = new NFTProxy(
             address(upgrade),
             abi.encodeWithSignature("initialize(string,uint256)", "TEST", 1000)
         );
