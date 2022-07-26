@@ -53,13 +53,13 @@ contract ContractTest is Test {
         upgrade.upgradeTo(address(NFTUp));
         proxy.upgradeProxy(address(upgrade), bytes(""));
 
-        (bool ok, bytes memory data) = address(proxy).call(
-            abi.encodeWithSignature("currentTokenId()")
-        );
 
-        require(ok, "Upgrade Fail");
+        (bool burnCall, bytes memory data) = address(proxy).call(
+            abi.encodeWithSignature("burn()")
+        );
+        require(burnCall, "Burn Fail");
         uint256 currentTokenId = abi.decode(data, (uint256));
-        assertEq(currentTokenId, 1);  
+        assertEq(currentTokenId, 0);  
     }
 
     function testFailUpgradeByNotOwner() public {
