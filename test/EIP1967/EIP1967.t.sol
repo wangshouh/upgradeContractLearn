@@ -33,22 +33,23 @@ contract ContractTest is Test {
         assertEq(NFTName, "TEST");
     }
 
-    function testMint() public {
-        (bool success, bytes memory data) = address(proxy).call(
+    function ProxyMint(address ProxyAddress) internal returns (uint256) {
+        (bool success, bytes memory data) = address(ProxyAddress).call(
             abi.encodeWithSignature("mint()")
         );
 
-        require(success, "Mint Fail");
-        uint256 currentTokenId = abi.decode(data, (uint256));
+        require(success, "Mint Fail");    
+        return abi.decode(data, (uint256));
+    }
+
+    function testMint() public {
+        uint256 currentTokenId = ProxyMint(address(proxy));
         assertEq(currentTokenId, 1);    
     }
 
     function testUpgradeByOwner() public {
-        (bool success, ) = address(proxy).call(
-            abi.encodeWithSignature("mint()")
-        );
-
-        require(success, "Mint Fail");
+        uint256 upgradeBeforeMint = ProxyMint(address(proxy));
+        assertEq(upgradeBeforeMint, 1); 
 
         upgrade.upgradeTo(address(NFTUp));
 
