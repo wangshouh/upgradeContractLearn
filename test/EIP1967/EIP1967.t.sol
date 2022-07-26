@@ -51,8 +51,6 @@ contract ContractTest is Test {
         require(success, "Mint Fail");
 
         upgrade.upgradeTo(address(NFTUp));
-        proxy.upgradeProxy(address(upgrade), bytes(""));
-
 
         (bool burnCall, bytes memory data) = address(proxy).call(
             abi.encodeWithSignature("burn()")
@@ -68,4 +66,22 @@ contract ContractTest is Test {
         proxy.upgradeProxy(address(upgrade), bytes(""));
         vm.stopPrank();
     }
+
+    
+    // function testMultiProxy() public {
+    //     NFTProxy proxyNext = new NFTProxy(
+    //         address(upgrade),
+    //         abi.encodeWithSignature("initialize(string,uint256)", "TEST2", 1000)
+    //     );
+    //     (bool proxyMint, ) = address(proxy).call(
+    //         abi.encodeWithSignature("mint()")
+    //     );
+    //     require(proxyMint, "Proxy Mint Fail");        
+    //     (bool proxyNextMint, ) = address(proxyNext).call(
+    //         abi.encodeWithSignature("mint()")
+    //     );
+    //     require(proxyNextMint, "ProxyNext Mint Fail");
+
+
+    // }
 }
