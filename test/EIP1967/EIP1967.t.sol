@@ -61,4 +61,11 @@ contract ContractTest is Test {
         uint256 currentTokenId = abi.decode(data, (uint256));
         assertEq(currentTokenId, 1);  
     }
+
+    function testFailUpgradeByNotOwner() public {
+        vm.prank(address(1));
+        upgrade.upgradeTo(address(NFTUp));
+        proxy.upgradeProxy(address(upgrade), bytes(""));
+        vm.stopPrank();
+    }
 }
