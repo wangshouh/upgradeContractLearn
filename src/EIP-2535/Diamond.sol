@@ -14,6 +14,7 @@ import "./interfaces/IDiamondLoupe.sol";
 import "./interfaces/IDiamondCut.sol";
 import "./interfaces/IERC173.sol";
 import "./interfaces/IERC165.sol";
+import "./libraries/LibAppStorage.sol";
 
 contract Diamond {
     // more arguments are added to this struct
@@ -22,7 +23,15 @@ contract Diamond {
         address owner;
     }
 
-    constructor(IDiamondCut.FacetCut[] memory _diamondCut, DiamondArgs memory _args) payable {
+    AppStorage internal s;
+
+    constructor(
+        IDiamondCut.FacetCut[] memory _diamondCut,
+        DiamondArgs memory _args
+    ) payable {
+        s.name = "Test";
+        s.maxSupply = 1000;
+
         LibDiamond.diamondCut(_diamondCut, address(0), new bytes(0));
         LibDiamond.setContractOwner(_args.owner);
 
@@ -50,12 +59,12 @@ contract Diamond {
             let result := delegatecall(gas(), facet, 0, calldatasize(), 0, 0)
             returndatacopy(0, 0, returndatasize())
             switch result
-                case 0 {
-                    revert(0, returndatasize())
-                }
-                default {
-                    return(0, returndatasize())
-                }
+            case 0 {
+                revert(0, returndatasize())
+            }
+            default {
+                return(0, returndatasize())
+            }
         }
     }
 
