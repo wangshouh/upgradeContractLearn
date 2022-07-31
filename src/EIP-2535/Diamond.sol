@@ -20,7 +20,6 @@ contract Diamond {
     // more arguments are added to this struct
     // this avoids stack too deep errors
     struct DiamondArgs {
-        address owner;
         string name;
         uint256 maxSupply;
     }
@@ -35,7 +34,7 @@ contract Diamond {
         s.maxSupply = _args.maxSupply;
 
         LibDiamond.diamondCut(_diamondCut, address(0), new bytes(0));
-        LibDiamond.setContractOwner(_args.owner);
+        LibDiamond.setContractOwner(msg.sender);
 
         LibDiamond.DiamondStorage storage ds = LibDiamond.diamondStorage();
 
