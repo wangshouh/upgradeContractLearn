@@ -21,6 +21,8 @@ contract Diamond {
     // this avoids stack too deep errors
     struct DiamondArgs {
         address owner;
+        string name;
+        uint256 maxSupply;
     }
 
     AppStorage internal s;
@@ -29,8 +31,8 @@ contract Diamond {
         IDiamondCut.FacetCut[] memory _diamondCut,
         DiamondArgs memory _args
     ) payable {
-        s.name = "Test";
-        s.maxSupply = 1000;
+        s.name = _args.name;
+        s.maxSupply = _args.maxSupply;
 
         LibDiamond.diamondCut(_diamondCut, address(0), new bytes(0));
         LibDiamond.setContractOwner(_args.owner);
