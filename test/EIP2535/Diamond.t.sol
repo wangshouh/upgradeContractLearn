@@ -2,20 +2,20 @@
 pragma solidity ^0.8.13;
 
 import "../../src/EIP-2535/interfaces/IDiamondCut.sol";
+import "../../src/EIP-2535/interfaces/IDiamondLoupe.sol";
+import "../../src/EIP-2535/interfaces/IERC173.sol";
 import "forge-std/Test.sol";
-import "forge-std/console2.sol";
 import "../../src/EIP-2535/Diamond.sol";
 import "../../src/EIP-2535/facets/TestFacet.sol";
 import "../../src/EIP-2535/facets/DiamondCutFacet.sol";
 import "../../src/EIP-2535/facets/DiamondLoupeFacet.sol";
 import "../../src/EIP-2535/facets/OwnershipFacet.sol";
 
-contract ContractTest is Test, IDiamondCut {
-    using stdStorage for StdStorage;
-    TestFacet private testfacet;
+contract ContractTest is Test {
     DiamondCutFacet private cutfacet;
     DiamondLoupeFacet private loupefacet;
     OwnershipFacet private ownerfacet;
+    TestFacet private testfacet;
     Diamond private diamond;
 
     function setUp() public {
@@ -27,34 +27,37 @@ contract ContractTest is Test, IDiamondCut {
         bytes4[] memory cutFunctions = new bytes4[](1);
         bytes4[] memory loupeFunctions = new bytes4[](4);
         bytes4[] memory ownerFunctions = new bytes4[](2);
-        FacetCut[] memory _diamondCut = new FacetCut[](3);
+        IDiamondCut.FacetCut[] memory _diamondCut = new IDiamondCut.FacetCut[](
+            3
+        );
 
-        cutFunctions[0] = bytes4(0xd8e30e70); //diamondCut
+        cutFunctions[0] = bytes4(0x1f931c1c); //diamondCut((address,uint8,bytes4[])[],address,bytes)
         _diamondCut[0] = (
-            FacetCut({
+            IDiamondCut.FacetCut({
                 facetAddress: address(cutfacet),
-                action: FacetCutAction.Add,
+                action: IDiamondCut.FacetCutAction.Add,
                 functionSelectors: cutFunctions
             })
         );
-        loupeFunctions[0] = bytes4(0x7a0ed627); //face()
-        loupeFunctions[1] = bytes4(0x567a3f7c); //facetFunctionSelectors()
+
+        loupeFunctions[0] = bytes4(0x7a0ed627); //facets()
+        loupeFunctions[1] = bytes4(0xadfca15e); //facetFunctionSelectors(address)
         loupeFunctions[2] = bytes4(0x52ef6b2c); //facetAddresses()
-        loupeFunctions[3] = bytes4(0xe6ff763a); //facetAddress()
+        loupeFunctions[3] = bytes4(0xcdffacc6); //facetAddress(bytes4)
         _diamondCut[1] = (
-            FacetCut({
+            IDiamondCut.FacetCut({
                 facetAddress: address(loupefacet),
-                action: FacetCutAction.Add,
+                action: IDiamondCut.FacetCutAction.Add,
                 functionSelectors: loupeFunctions
             })
         );
 
-        ownerFunctions[0] = bytes4(0x880ad0af); //transferOwnership
+        ownerFunctions[0] = bytes4(0xf2fde38b); //transferOwnership(address)
         ownerFunctions[1] = bytes4(0x8da5cb5b); //owner
         _diamondCut[2] = (
-            FacetCut({
+            IDiamondCut.FacetCut({
                 facetAddress: address(ownerfacet),
-                action: FacetCutAction.Add,
+                action: IDiamondCut.FacetCutAction.Add,
                 functionSelectors: ownerFunctions
             })
         );
@@ -66,24 +69,16 @@ contract ContractTest is Test, IDiamondCut {
         diamond = new Diamond(_diamondCut, diamondArgs);
     }
 
-    function diamondCut(
-        FacetCut[] calldata _diamondCut,
-        address _init,
-        bytes calldata _calldata
-    ) external override {}
+    function testOwner() public {
+        IERC173(address(diamond)).owner();
+        IERC173(address(diamond)).transferOwnership(address(1));
+    }
 
-    function testfacetAddresses() public {
-        (bool ok, bytes memory facetAddresses) = address(diamond).call(
-            abi.encodeWithSignature("facetAddresses()")
-        );
-        require(ok, "Get facetAddresses Fail");
-
-        address[] memory facetAddressesReturn = abi.decode(
-            facetAddresses,
-            (address[])
-        );
-        assertEq(facetAddressesReturn[0], address(cutfacet));
-        assertEq(facetAddressesReturn[1], address(loupefacet));
-        assertEq(facetAddressesReturn[2], address(ownerfacet));
+    function testLoupe() public view {
+        IDiamondLoupe loupeFacteTest = IDiamondLoupe(address(diamond));
+        loupeFacteTest.facets();
+        loupeFacteTest.facetFunctionSelectors(address(cutfacet));
+        loupeFacteTest.facetAddresses();
+        loupeFacteTest.facetAddress(bytes4(0xf2fde38b));
     }
 }
