@@ -19,4 +19,8 @@ contract TestFacet {
     function maxSupply() external view returns (uint256) {
         return s.maxSupply;
     }
+
+    function setName(string memory _name) external {
+        s.name = _name;
+    } 
 }
