@@ -83,12 +83,13 @@ contract ContractTest is Test {
     }
 
     function addTestFacet() internal {
-        bytes4[] memory testFunctions = new bytes4[](3);
+        bytes4[] memory testFunctions = new bytes4[](4);
         IDiamondCut.FacetCut[] memory _testDiamondCut = new IDiamondCut.FacetCut[](1);
 
         testFunctions[0] = bytes4(0x06fdde03); //name
         testFunctions[1] = bytes4(0x18160ddd); //totalSupply
         testFunctions[2] = bytes4(0xd5abeb01); //maxSupply
+        testFunctions[3] = bytes4(0xc47f0027); //setName(string)
 
         _testDiamondCut[0] = (
             IDiamondCut.FacetCut({
@@ -107,11 +108,15 @@ contract ContractTest is Test {
 
     function testDiamondCut() public {
         addTestFacet();
+        (bool callSetName,) = address(diamond).call(
+            abi.encodeWithSignature("setName(string)", "T2")
+        );
+        require(callSetName, "Call set name Fail");
         (bool callOk, bytes memory nameReturnBytes) = address(diamond).call(
             abi.encodeWithSignature("name()")
         );
         require(callOk, "Call name Fail");
         string memory nameReturn = abi.decode(nameReturnBytes, (string));
-        assertEq(nameReturn, "Test");
+        assertEq(nameReturn, "T2");
     }
 }
