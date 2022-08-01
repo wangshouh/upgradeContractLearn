@@ -81,4 +81,37 @@ contract ContractTest is Test {
         loupeFacteTest.facetAddresses();
         loupeFacteTest.facetAddress(bytes4(0xf2fde38b));
     }
+
+    function addTestFacet() internal {
+        bytes4[] memory testFunctions = new bytes4[](3);
+        IDiamondCut.FacetCut[] memory _testDiamondCut = new IDiamondCut.FacetCut[](1);
+
+        testFunctions[0] = bytes4(0x06fdde03); //name
+        testFunctions[1] = bytes4(0x18160ddd); //totalSupply
+        testFunctions[2] = bytes4(0xd5abeb01); //maxSupply
+
+        _testDiamondCut[0] = (
+            IDiamondCut.FacetCut({
+                facetAddress: address(testfacet),
+                action: IDiamondCut.FacetCutAction.Add,
+                functionSelectors: testFunctions
+            })
+        );
+
+        IDiamondCut(address(diamond)).diamondCut(
+            _testDiamondCut,
+            address(0x0),
+            new bytes(0)
+        );
+    }
+
+    function testDiamondCut() public {
+        addTestFacet();
+        (bool callOk, bytes memory nameReturnBytes) = address(diamond).call(
+            abi.encodeWithSignature("name()")
+        );
+        require(callOk, "Call name Fail");
+        string memory nameReturn = abi.decode(nameReturnBytes, (string));
+        assertEq(nameReturn, "Test");
+    }
 }
