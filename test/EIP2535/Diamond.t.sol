@@ -89,7 +89,7 @@ contract ContractTest is Test {
         testFunctions[0] = bytes4(0x06fdde03); //name
         testFunctions[1] = bytes4(0x18160ddd); //totalSupply
         testFunctions[2] = bytes4(0xd5abeb01); //maxSupply
-        testFunctions[3] = bytes4(0xc47f0027); //setName(string)
+        testFunctions[3] = bytes4(0xc47f0027 ); //setName(string)
 
         _testDiamondCut[0] = (
             IDiamondCut.FacetCut({
