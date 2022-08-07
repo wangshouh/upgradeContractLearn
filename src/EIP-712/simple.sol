@@ -72,7 +72,7 @@ contract Example {
         ));
     }
 
-    function verify(Mail memory mail, uint8 v, bytes32 r, bytes32 s) internal view returns (bool) {
+    function verify(Mail memory mail, uint8 v, bytes32 r, bytes32 s) public view returns (bool) {
         // Note: we need to use `encodePacked` here instead of `encode`.
         bytes32 digest = keccak256(abi.encodePacked(
             "\x19\x01",
