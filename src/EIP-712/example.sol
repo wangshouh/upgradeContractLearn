@@ -35,7 +35,7 @@ contract Example {
 
     bytes32 DOMAIN_SEPARATOR;
 
-    constructor () public {
+    constructor () {
         DOMAIN_SEPARATOR = hash(EIP712Domain({
             name: "Ether Mail",
             version: '1',
@@ -45,7 +45,7 @@ contract Example {
         }));
     }
 
-    function hash(EIP712Domain eip712Domain) internal pure returns (bytes32) {
+    function hash(EIP712Domain memory eip712Domain) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             EIP712DOMAIN_TYPEHASH,
             keccak256(bytes(eip712Domain.name)),
@@ -55,7 +55,7 @@ contract Example {
         ));
     }
 
-    function hash(Person person) internal pure returns (bytes32) {
+    function hash(Person memory person) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             PERSON_TYPEHASH,
             keccak256(bytes(person.name)),
@@ -63,7 +63,7 @@ contract Example {
         ));
     }
 
-    function hash(Mail mail) internal pure returns (bytes32) {
+    function hash(Mail memory mail) internal pure returns (bytes32) {
         return keccak256(abi.encode(
             MAIL_TYPEHASH,
             hash(mail.from),
@@ -72,7 +72,7 @@ contract Example {
         ));
     }
 
-    function verify(Mail mail, uint8 v, bytes32 r, bytes32 s) internal view returns (bool) {
+    function verify(Mail memory mail, uint8 v, bytes32 r, bytes32 s) internal view returns (bool) {
         // Note: we need to use `encodePacked` here instead of `encode`.
         bytes32 digest = keccak256(abi.encodePacked(
             "\x19\x01",
