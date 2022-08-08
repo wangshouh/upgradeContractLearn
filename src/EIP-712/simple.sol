@@ -25,7 +25,7 @@ contract Example {
         "EIP712Domain(string name,string version,uint256 chainId,address verifyingContract)"
     );
 
-    bytes32 constant PERSON_TYPEHASH = keccak256(
+    bytes32 constant PERSON_TYPEHASH = keccak256( 
         "Person(string name,address wallet)"
     );
 
@@ -80,28 +80,5 @@ contract Example {
             hash(mail)
         ));
         return ecrecover(digest, v, r, s) == mail.from.wallet;
-    }
-    
-    function test() public view returns (bool) {
-        // Example signed message
-        Mail memory mail = Mail({
-            from: Person({
-               name: "Cow",
-               wallet: 0xCD2a3d9F938E13CD947Ec05AbC7FE734Df8DD826
-            }),
-            to: Person({
-                name: "Bob",
-                wallet: 0xbBbBBBBbbBBBbbbBbbBbbbbBBbBbbbbBbBbbBBbB
-            }),
-            contents: "Hello, Bob!"
-        });
-        uint8 v = 28;
-        bytes32 r = 0x4355c47d63924e8a72e509b65029052eb6c299d53a04e167c5775fd466751c9d;
-        bytes32 s = 0x07299936d304c153f6443dfa05f40ff007d72911b6f72307f996231605b91562;
-        
-        assert(DOMAIN_SEPARATOR == 0xf2cee375fa42b42143804025fc449deafd50cc031ca257e0b194a650a912090f);
-        assert(hash(mail) == 0xc52c0ee5d84264471806290a3f2c4cecfc5490626bf912d01f240d7a274b371e);
-        assert(verify(mail, v, r, s));
-        return true;
     }
 }
