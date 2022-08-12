@@ -38,7 +38,8 @@ contract MetaTxTest is Test {
 
     function testFailVerify() public {
         vm.chainId(4);
-        bytes memory failSign = hex"a39fa6101761d1a912d26ab259c186e58c1208cecf1ee8703554ff405b3309032a96ca0e06820fba236b06662d92dc430a28061fa0afece16619c9b3e7f562df1c";
+        bytes
+            memory failSign = hex"a39fa6101761d1a912d26ab259c186e58c1208cecf1ee8703554ff405b3309032a96ca0e06820fba236b06662d92dc430a28061fa0afece16619c9b3e7f562df1c";
         assertTrue(forwarder.verify(request, failSign));
     }
 
@@ -46,5 +47,11 @@ contract MetaTxTest is Test {
         vm.chainId(4);
         forwarder.execute(request, Signature);
         assertEq(recipient.retrieve(), 20);
+    }
+
+    function testFailInWhiteList() public {
+        vm.prank(address(0));
+        forwarder.execute(request, Signature);
+        vm.stopPrank();
     }
 }
