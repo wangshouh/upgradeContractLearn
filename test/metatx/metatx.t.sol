@@ -41,4 +41,10 @@ contract MetaTxTest is Test {
         bytes memory failSign = hex"a39fa6101761d1a912d26ab259c186e58c1208cecf1ee8703554ff405b3309032a96ca0e06820fba236b06662d92dc430a28061fa0afece16619c9b3e7f562df1c";
         assertTrue(forwarder.verify(request, failSign));
     }
+
+    function testExecute() public {
+        vm.chainId(4);
+        forwarder.execute(request, Signature);
+        assertEq(recipient.retrieve(), 20);
+    }
 }
