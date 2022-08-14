@@ -55,10 +55,12 @@ contract Box is ERC2771Recipient {
     uint256 private _value;
 
     event NewValue(uint256 newValue);
+    event Sender(address sender);
 
     function store(uint256 newValue) public {
         _value = newValue;
         emit NewValue(newValue);
+        emit Sender(_msgSender());
     }
 
     function retrieve() public view returns (uint256) {
